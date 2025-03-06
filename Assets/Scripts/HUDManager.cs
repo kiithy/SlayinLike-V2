@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HUDManager : Singleton<HUDManager>
 {
@@ -11,6 +12,15 @@ public class HUDManager : Singleton<HUDManager>
     public GameObject healthText;
     public GameObject gameWinPanel;
     public GameObject highScoreText;
+    private int score;
+    public GameConstants gameConstants;
+    public int maxPlayerHealth;
+    private int health;
+    // Assign the SO asset in inspector
+    [Header("Events")]
+    public SimpleGameEvent onRestartEvent;
+    public SimpleGameEvent onGameWinEvent;
+    public SimpleGameEvent onGameOverEvent;
 
     protected override void OnAwake()
     {
@@ -70,7 +80,10 @@ public class HUDManager : Singleton<HUDManager>
 
     public void OnRestartButtonClick()
     {
-        GameManager.Instance.GameRestart();
+        // The SimpleGameEventListener components will handle:
+        // - Calling HideGameOver()
+        // - Calling GameManager.GameRestart()
+        onRestartEvent.Raise(null);
     }
 
     public void SetHighScore(int highScore)

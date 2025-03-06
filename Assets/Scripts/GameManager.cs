@@ -94,7 +94,6 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         Time.timeScale = 0.0f;
-        HUDManager.Instance.ShowGameOver();
         backgroundMusic.Stop();
         if (gameOverMusic != null)
         {
@@ -104,6 +103,7 @@ public class GameManager : Singleton<GameManager>
 
     public void GameRestart()
     {
+        // Handle game state
         if (score > gameConstants.highScore)
         {
             gameConstants.highScore = score;
@@ -112,8 +112,11 @@ public class GameManager : Singleton<GameManager>
         score = 0;
         health = maxPlayerHealth;
         gameConstants.playerHealth = health;
+
+        // Update UI through HUDManager
         UpdateUI();
-        HUDManager.Instance.HideGameOver();
+
+        // Handle scene and time
         Time.timeScale = 1.0f;
         SceneManager.LoadScene("MainScene");
     }
@@ -121,7 +124,6 @@ public class GameManager : Singleton<GameManager>
     public void GameWin()
     {
         Time.timeScale = 0.0f;
-        HUDManager.Instance.GameWin();
         backgroundMusic.Stop();
         if (gameWinMusic != null)
         {

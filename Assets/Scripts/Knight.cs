@@ -41,7 +41,8 @@ public class gameplay : Singleton<gameplay>
 
     private GameManager gameManager;
     private Vector3 startingPosition;
-
+    public GameConstants gameConstants;
+    public SimpleGameEvent onGameOverEvent;
     private void Awake()
     {
         base.Awake();
@@ -183,9 +184,8 @@ public class gameplay : Singleton<gameplay>
         knightSprite = GetComponent<SpriteRenderer>();
         knightAnimator.SetBool("OnGroundState", onGroundState);
         knightCollider = GetComponent<CapsuleCollider2D>();
-        gameManager = GameManager.Instance;
-        health = gameManager.gameConstants.playerHealth > 0 ?
-        gameManager.gameConstants.playerHealth : gameManager.maxPlayerHealth;
+        health = gameConstants.playerHealth > 0 ?
+        gameConstants.playerHealth : HUDManager.Instance.maxPlayerHealth;
         startingPosition = transform.position;
         SceneManager.activeSceneChanged += SetStartingPosition;
     }
@@ -261,7 +261,7 @@ public class gameplay : Singleton<gameplay>
         GameManager.Instance.SetHealth(health);
         if (health <= 0)
         {
-            GameManager.Instance.GameOver();
+            onGameOverEvent.Raise(null);
             return;
         }
         await Damaged();

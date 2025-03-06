@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class Orc : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class Orc : MonoBehaviour
     public GameManager gameManager;
     public int health = 10;
     public GameObject statue;
+
+    private int orcsDefeated = 0;
+    private int totalOrcs = 5;
+    public SimpleGameEvent onGameWinEvent;
 
     private void Start()
     {
@@ -148,7 +153,7 @@ public class Orc : MonoBehaviour
         if (health <= 0)
         {
             gameManager.IncreaseScore(10);  // Bonus points for kill
-            gameManager.OrcDefeated();
+            OrcDefeated();
             PlayDeathSound();
             animator.SetTrigger("Kill");
             StartCoroutine(DestroyOrcBody());
@@ -221,5 +226,14 @@ public class Orc : MonoBehaviour
     public void PlayDeathSound()
     {
         orcAudioSource.PlayOneShot(orcDeathSound);
+    }
+
+    public void OrcDefeated()
+    {
+        orcsDefeated++;
+        if (SceneManager.GetActiveScene().name == "SecondScene" && orcsDefeated >= totalOrcs)
+        {
+            onGameWinEvent.Raise(null); // Instead of GameManager.Instance.GameWin()
+        }
     }
 }
